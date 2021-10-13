@@ -1,3 +1,3 @@
 # My philosophy website
-Philosophy website for Jasmine Ball.
+Philosophy website by Jasmine Ball.
 Website address is TBD.
