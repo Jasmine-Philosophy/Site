@@ -1,41 +1,43 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// Basic proof of concept working as of 17/10/2021
+// Jasmine-Ball
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-
-var app = express();
-
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+const http = require('http');
+const mysql = require('mysql');
+const port = process.env.PORT || 3000;
+const con = mysql.createConnection({
+    host: 'server244.web-hosting.com',
+    user: 'jasmxfvl_db_web',
+    password: 'bl@ck100', // Will set this up properly
+    database: 'jasmxfvl_analytics'
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+function last(displ) {
+    const handler = (req, res) => {
+res.end("Welcome. this is our latest topic: " + displ);
+};
+const server = http.createServer(handler);
+server.listen(port, err => {
+if (err) {
+    console.error(err);
+}
+else {
+    console.error(`Server listening on port ${port}`);
+}
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+});  
+    
+};
+
+function qy() {
+con.connect(function(err) {
+    if (err) throw err;
+    con.query("SELECT Body FROM articles WHERE Body LIKE 'St%' LIMIT 1", function (err, result, fields)
+{
+    if (err) throw err;
+    const displ = result[0].Body;
+    last(displ);
+    });
 });
+};
 
-module.exports = app;
+qy();
